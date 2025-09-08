@@ -48,23 +48,19 @@
         const menuTableBody = document.querySelector("#menuTable tbody");
         const loadingMessage = document.getElementById("loading");
         const menuTable = document.getElementById("menuTable");
-        let db; // Variable para la base de datos
+        let db;
 
-        // Función para inicializar Firebase de forma segura
         async function initializeFirebase() {
             try {
-                // Solicitar la configuración de Firebase a la función del servidor
+                // Se corrigió para que llame a su propia API local
                 const response = await fetch('/api/firebase-config');
                 const firebaseConfig = await response.json();
                 
-                // Inicializar Firebase
                 firebase.initializeApp(firebaseConfig);
                 db = firebase.database();
                 
-                // Cargar el menú después de la inicialización
                 loadMenu();
                 
-                // Registrar la visita
                 try {
                     fetch("/api/track-view", { method: "POST" });
                 } catch (error) {
