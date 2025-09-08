@@ -18,7 +18,7 @@
       }
     </style>
 </head>
-<body class="font-roboto bg-gray-100 text-gray-800">
+<body class="font-roboto bg-gray-100 text-gray-800" onunload="detachListener()">
     <header class="header-bg text-white py-4 text-center flex items-center justify-center shadow-md mb-8">
       <img src="logo_utp.png" alt="Logo UTP" class="h-12 mr-4">
       <h2 class="text-2xl font-bold">Menú UTP</h2>
@@ -42,7 +42,7 @@
     </div>
 
     <div class="text-center mt-8 mb-8">
-      <a href="https://forms.office.com/r/4VTptYVr4k?origin=lprLink" target="_blank" class="text-lg font-bold text-gray-600 hover:text-utp-purple transition-colors duration-300">
+      <a href="https://forms.office.com/r/GzwCw7iFhK?origin=lprLink" target="_blank" class="text-lg font-bold text-gray-600 hover:text-utp-purple transition-colors duration-300">
         ¿Tienes alguna sugerencia? ¡Escríbenos!
       </a>
     </div>
@@ -55,6 +55,7 @@
         const loadingMessage = document.getElementById("loading");
         const menuTable = document.getElementById("menuTable");
         let db;
+        let menuRef;
 
         async function initializeFirebase() {
             try {
@@ -63,6 +64,7 @@
                 
                 firebase.initializeApp(firebaseConfig);
                 db = firebase.database();
+                menuRef = db.ref("menuHoy");
                 
                 loadMenu();
                 
@@ -99,7 +101,8 @@
         }
 
         function loadMenu() {
-            db.ref("menuHoy").on("value", (snapshot) => {
+            // Usamos on en lugar de get para la sincronización en tiempo real
+            menuRef.on("value", (snapshot) => {
                 if (snapshot.exists()) {
                     const data = snapshot.val();
                     renderMenu(data.items);
@@ -109,8 +112,14 @@
             });
         }
         
+        function detachListener() {
+          // Desconecta el listener cuando el usuario sale de la página
+          if (menuRef) {
+            menuRef.off("value");
+          }
+        }
+        
         initializeFirebase();
     </script>
 </body>
 </html>
-
