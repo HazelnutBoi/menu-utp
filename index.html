@@ -63,27 +63,50 @@
         const loadingMessage = document.getElementById("loading");
         const menuTable = document.getElementById("menuTable");
 
+        // Función para renderizar el menú
+        function renderMenu(items) {
+          menuTableBody.innerHTML = "";
+          if (items && items.length > 0) {
+            items.forEach(item => {
+                const formattedPrice = "B/. " + item.precio;
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td class="p-4 border border-gray-200 text-lg">${item.descripcion}</td>
+                    <td class="p-4 border border-gray-200 text-lg">${formattedPrice}</td>
+                `;
+                menuTableBody.appendChild(row);
+            });
+            loadingMessage.classList.add("hidden");
+            menuTable.classList.remove("hidden");
+          } else {
+            loadingMessage.textContent = "El menú de hoy no está disponible.";
+            loadingMessage.classList.remove("hidden");
+            menuTable.classList.add("hidden");
+          }
+        }
+
+        const cachedMenu = localStorage.getItem("menuCache");
+        if (cachedMenu) {
+            const data = JSON.parse(cachedMenu);
+            renderMenu(data.items);
+        }
+
         db.ref("menuHoy").on("value", (snapshot) => {
-            menuTableBody.innerHTML = "";
-            
-            if (snapshot.exists() && snapshot.val().items) {
-                snapshot.val().items.forEach(item => {
-                    const formattedPrice = "B/. " + item.precio;
-                    const row = document.createElement("tr");
-                    row.innerHTML = `
-                        <td class="p-4 border border-gray-200 text-lg">${item.descripcion}</td>
-                        <td class="p-4 border border-gray-200 text-lg">${formattedPrice}</td>
-                    `;
-                    menuTableBody.appendChild(row);
-                });
-                loadingMessage.classList.add("hidden");
-                menuTable.classList.remove("hidden");
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                renderMenu(data.items);
+                localStorage.setItem("menuCache", JSON.stringify(data));
             } else {
-                loadingMessage.textContent = "El menú de hoy no está disponible.";
-                loadingMessage.classList.remove("hidden");
-                menuTable.classList.add("hidden");
+                renderMenu([]);
             }
         });
+
+        try {
+            fetch("/api/track-view", { method: "POST" });
+        } catch (error) {
+            console.error("Error al registrar la visita");
+        }
     </script>
 </body>
 </html>
+
