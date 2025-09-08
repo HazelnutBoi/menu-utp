@@ -41,6 +41,12 @@
       </table>
     </div>
 
+    <div class="text-center mt-8 mb-8">
+      <a href="https://forms.office.com/r/GzwCw7iFhK?origin=lprLink" target="_blank" class="text-lg font-bold text-gray-600 hover:text-utp-purple transition-colors duration-300">
+        ¿Tienes alguna sugerencia? ¡Escríbenos!
+      </a>
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
@@ -93,7 +99,6 @@
         }
 
         function loadMenu() {
-            // Se eliminó la caché local para siempre mostrar los datos en vivo.
             db.ref("menuHoy").on("value", (snapshot) => {
                 if (snapshot.exists()) {
                     const data = snapshot.val();
