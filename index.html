@@ -48,14 +48,14 @@
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
     <script>
         const menuTableBody = document.querySelector("#menuTable tbody");
         const loadingMessage = document.getElementById("loading");
         const menuTable = document.getElementById("menuTable");
         let db;
-        let menuRef;
+        let listener;
 
         async function initializeFirebase() {
             try {
@@ -63,8 +63,7 @@
                 const firebaseConfig = await response.json();
                 
                 firebase.initializeApp(firebaseConfig);
-                db = firebase.database();
-                menuRef = db.ref("menuHoy");
+                db = firebase.firestore();
                 
                 loadMenu();
                 
@@ -99,12 +98,13 @@
             menuTable.classList.add("hidden");
           }
         }
-
+        
+        // Nueva función para cargar el menú desde Firestore
         function loadMenu() {
-            // Usamos on en lugar de get para la sincronización en tiempo real
-            menuRef.on("value", (snapshot) => {
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
+            const menuRef = db.collection("menus").doc("menuHoy");
+            listener = menuRef.onSnapshot((docSnapshot) => {
+                if (docSnapshot.exists) {
+                    const data = docSnapshot.data();
                     renderMenu(data.items);
                 } else {
                     renderMenu([]);
@@ -112,10 +112,10 @@
             });
         }
         
+        // Nueva función para desconectar el listener
         function detachListener() {
-          // Desconecta el listener cuando el usuario sale de la página
-          if (menuRef) {
-            menuRef.off("value");
+          if (listener) {
+            listener();
           }
         }
         
