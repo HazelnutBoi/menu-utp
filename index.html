@@ -45,15 +45,16 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
     <script>
+        // Leer las variables de entorno para la configuración
         const firebaseConfig = {
-          apiKey: "AIzaSyAMkuy8jW-uxMx9Xpq-MPmHkKsf8l7qKb8",
-          authDomain: "menu-cafeteria-crpo.firebaseapp.com",
-          databaseURL: "https://menu-cafeteria-crpo-default-rtdb.firebaseio.com",
-          projectId: "menu-cafeteria-crpo",
-          storageBucket: "menu-cafeteria-crpo.firebasestorage.app",
-          messagingSenderId: "741029761582",
-          appId: "1:741029761582:web:0256a9ea14385db5cd85bf",
-          measurementId: "G-ZWWZVLBRTT"
+          apiKey: "%FIREBASE_API_KEY%",
+          authDomain: "%FIREBASE_AUTH_DOMAIN%",
+          databaseURL: "%FIREBASE_DATABASE_URL%",
+          projectId: "%FIREBASE_PROJECT_ID%",
+          storageBucket: "%FIREBASE_STORAGE_BUCKET%",
+          messagingSenderId: "%FIREBASE_MESSAGING_SENDER_ID%",
+          appId: "%FIREBASE_APP_ID%",
+          measurementId: "%FIREBASE_MEASUREMENT_ID%"
         };
         
         firebase.initializeApp(firebaseConfig);
@@ -63,7 +64,6 @@
         const loadingMessage = document.getElementById("loading");
         const menuTable = document.getElementById("menuTable");
 
-        // Función para renderizar el menú
         function renderMenu(items) {
           menuTableBody.innerHTML = "";
           if (items && items.length > 0) {
@@ -109,4 +109,3 @@
     </script>
 </body>
 </html>
-
