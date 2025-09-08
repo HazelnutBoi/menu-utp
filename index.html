@@ -10,31 +10,36 @@
       :root {
         --utp-purple: #6a0dad;
       }
-      header {
+      .header-bg {
         background: var(--utp-purple);
+      }
+      .hidden {
+        display: none;
       }
     </style>
 </head>
-<body class="font-roboto p-5 bg-gray-100 text-gray-800">
-    <header class="text-white p-4 text-center flex items-center justify-center shadow-md mb-8">
+<body class="font-roboto bg-gray-100 text-gray-800">
+    <header class="header-bg text-white py-4 text-center flex items-center justify-center shadow-md mb-8">
       <img src="logo_utp.png" alt="Logo UTP" class="h-12 mr-4">
       <h2 class="text-2xl font-bold">Menú UTP</h2>
     </header>
 
-    <div id="loading" class="text-center text-xl text-gray-500">
-      Cargando menú...
+    <div class="px-5 max-w-4xl mx-auto">
+      <div id="loading" class="text-center text-xl text-gray-500">
+        Cargando menú...
+      </div>
+      
+      <table id="menuTable" class="hidden w-full border-collapse my-5 shadow-lg bg-white rounded-lg overflow-hidden">
+          <thead>
+              <tr>
+                  <th class="p-4 border border-gray-200 text-left text-white uppercase font-bold text-lg" style="background-color: var(--utp-purple);">Descripción</th>
+                  <th class="p-4 border border-gray-200 text-left text-white uppercase font-bold text-lg" style="background-color: var(--utp-purple);">Precio</th>
+              </tr>
+          </thead>
+          <tbody>
+          </tbody>
+      </table>
     </div>
-    
-    <table id="menuTable" class="hidden w-full border-collapse my-5 mx-auto shadow-lg bg-white rounded-lg overflow-hidden">
-        <thead>
-            <tr>
-                <th class="p-4 border border-gray-200 text-left text-white uppercase font-bold text-lg" style="background-color: var(--utp-purple);">Descripción</th>
-                <th class="p-4 border border-gray-200 text-left text-white uppercase font-bold text-lg" style="background-color: var(--utp-purple);">Precio</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -63,10 +68,11 @@
             
             if (snapshot.exists() && snapshot.val().items) {
                 snapshot.val().items.forEach(item => {
+                    const formattedPrice = "B/. " + item.precio;
                     const row = document.createElement("tr");
                     row.innerHTML = `
                         <td class="p-4 border border-gray-200 text-lg">${item.descripcion}</td>
-                        <td class="p-4 border border-gray-200 text-lg">${item.precio}</td>
+                        <td class="p-4 border border-gray-200 text-lg">${formattedPrice}</td>
                     `;
                     menuTableBody.appendChild(row);
                 });
