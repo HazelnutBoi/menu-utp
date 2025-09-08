@@ -29,11 +29,24 @@
         Cargando menú...
       </div>
       
+      <h3 class="text-2xl font-bold text-gray-800 mb-2">Menú de Hoy</h3>
       <table id="menuTable" class="hidden w-full border-collapse my-5 shadow-lg bg-white rounded-lg overflow-hidden">
           <thead>
               <tr>
                   <th class="p-4 border border-gray-200 text-left text-white uppercase font-bold text-lg" style="background-color: var(--utp-purple);">Descripción</th>
                   <th class="p-4 border border-gray-200 text-left text-white uppercase font-bold text-lg" style="background-color: var(--utp-purple);">Precio</th>
+              </tr>
+          </thead>
+          <tbody>
+          </tbody>
+      </table>
+      
+      <h3 id="upcomingHeader" class="text-2xl font-bold text-gray-800 mt-8 mb-2 hidden">Próximamente</h3>
+      <table id="upcomingMenuTable" class="hidden w-full border-collapse my-5 shadow-lg bg-white rounded-lg overflow-hidden">
+          <thead>
+              <tr>
+                  <th class="p-4 border border-gray-200 text-left text-white uppercase font-bold text-lg" style="background-color: var(--utp-purple);">Descripción</th>
+                  <th class="p-4 border border-gray-200 text-left text-white uppercase font-bold text-lg" style="background-color: var(--utp-purple);">Tiempo restante</th>
               </tr>
           </thead>
           <tbody>
@@ -52,8 +65,11 @@
 
     <script>
         const menuTableBody = document.querySelector("#menuTable tbody");
+        const upcomingMenuTableBody = document.querySelector("#upcomingMenuTable tbody");
         const loadingMessage = document.getElementById("loading");
         const menuTable = document.getElementById("menuTable");
+        const upcomingMenuTable = document.getElementById("upcomingMenuTable");
+        const upcomingHeader = document.getElementById("upcomingHeader");
         let db;
         let listener;
 
@@ -78,41 +94,62 @@
             }
         }
         
-        function renderMenu(items) {
-          menuTableBody.innerHTML = "";
+        // Ahora renderMenu recibe la lista de platos y el cuerpo de la tabla a llenar
+        function renderMenu(items, tableBody) {
+          tableBody.innerHTML = "";
           if (items && items.length > 0) {
             items.forEach(item => {
-                const formattedPrice = "B/. " + item.precio;
                 const row = document.createElement("tr");
                 row.innerHTML = `
                     <td class="p-4 border border-gray-200 text-lg">${item.descripcion}</td>
-                    <td class="p-4 border border-gray-200 text-lg">${formattedPrice}</td>
+                    <td class="p-4 border border-gray-200 text-lg">${item.esProximo ? 'Próximamente' : 'B/. ' + item.precio}</td>
                 `;
-                menuTableBody.appendChild(row);
+                tableBody.appendChild(row);
             });
-            loadingMessage.classList.add("hidden");
-            menuTable.classList.remove("hidden");
           } else {
-            loadingMessage.textContent = "El menú de hoy no está disponible.";
-            loadingMessage.classList.remove("hidden");
-            menuTable.classList.add("hidden");
+             // Limpia la tabla si no hay elementos
+             tableBody.innerHTML = "";
           }
         }
         
-        // Nueva función para cargar el menú desde Firestore
         function loadMenu() {
             const menuRef = db.collection("menus").doc("menuHoy");
             listener = menuRef.onSnapshot((docSnapshot) => {
                 if (docSnapshot.exists) {
-                    const data = docSnapshot.data();
-                    renderMenu(data.items);
+                    const allItems = docSnapshot.data().items || [];
+                    
+                    // Filtramos los platos en dos listas
+                    const readyItems = allItems.filter(item => !item.esProximo);
+                    const upcomingItems = allItems.filter(item => item.esProximo);
+                    
+                    // Renderizamos ambas listas en sus respectivas tablas
+                    renderMenu(readyItems, menuTableBody);
+                    renderMenu(upcomingItems, upcomingMenuTableBody);
+
+                    // Mostramos u ocultamos las tablas según el contenido
+                    if (readyItems.length > 0) {
+                      menuTable.classList.remove("hidden");
+                    } else {
+                      menuTable.classList.add("hidden");
+                    }
+                    if (upcomingItems.length > 0) {
+                      upcomingMenuTable.classList.remove("hidden");
+                      upcomingHeader.classList.remove("hidden");
+                    } else {
+                      upcomingMenuTable.classList.add("hidden");
+                      upcomingHeader.classList.add("hidden");
+                    }
+                    
+                    loadingMessage.classList.add("hidden");
                 } else {
-                    renderMenu([]);
+                    renderMenu([], menuTableBody);
+                    renderMenu([], upcomingMenuTableBody);
+                    loadingMessage.textContent = "El menú de hoy no está disponible.";
+                    loadingMessage.classList.remove("hidden");
                 }
             });
         }
         
-        // Nueva función para desconectar el listener
         function detachListener() {
           if (listener) {
             listener();
