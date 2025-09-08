@@ -72,6 +72,7 @@
         const upcomingHeader = document.getElementById("upcomingHeader");
         let db;
         let listener;
+        let countdownInterval;
 
         async function initializeFirebase() {
             try {
@@ -94,20 +95,49 @@
             }
         }
         
-        // Ahora renderMenu recibe la lista de platos y el cuerpo de la tabla a llenar
+        function formatRemainingTime(milliseconds) {
+            const totalSeconds = Math.max(0, Math.floor(milliseconds / 1000));
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            return `${minutes} min ${seconds} s`;
+        }
+        
+        function updateUpcomingTimers() {
+            const rows = upcomingMenuTableBody.querySelectorAll("tr");
+            rows.forEach(row => {
+                const endTime = parseInt(row.dataset.endtime);
+                const remaining = endTime - Date.now();
+                const timeCell = row.querySelector("td:last-child");
+
+                if (remaining > 0) {
+                    timeCell.textContent = formatRemainingTime(remaining);
+                } else {
+                    timeCell.textContent = "¡Listo!";
+                }
+            });
+        }
+        
         function renderMenu(items, tableBody) {
           tableBody.innerHTML = "";
           if (items && items.length > 0) {
             items.forEach(item => {
                 const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td class="p-4 border border-gray-200 text-lg">${item.descripcion}</td>
-                    <td class="p-4 border border-gray-200 text-lg">${item.esProximo ? 'Próximamente' : 'B/. ' + item.precio}</td>
-                `;
+                if (item.esProximo) {
+                    row.dataset.endtime = item.readyAt; // Almacenamos el timestamp
+                    row.innerHTML = `
+                        <td class="p-4 border border-gray-200 text-lg">${item.descripcion}</td>
+                        <td class="p-4 border border-gray-200 text-lg">Cargando...</td>
+                    `;
+                } else {
+                    const formattedPrice = "B/. " + item.precio;
+                    row.innerHTML = `
+                        <td class="p-4 border border-gray-200 text-lg">${item.descripcion}</td>
+                        <td class="p-4 border border-gray-200 text-lg">${formattedPrice}</td>
+                    `;
+                }
                 tableBody.appendChild(row);
             });
           } else {
-             // Limpia la tabla si no hay elementos
              tableBody.innerHTML = "";
           }
         }
@@ -118,15 +148,23 @@
                 if (docSnapshot.exists) {
                     const allItems = docSnapshot.data().items || [];
                     
-                    // Filtramos los platos en dos listas
                     const readyItems = allItems.filter(item => !item.esProximo);
                     const upcomingItems = allItems.filter(item => item.esProximo);
                     
-                    // Renderizamos ambas listas en sus respectivas tablas
                     renderMenu(readyItems, menuTableBody);
                     renderMenu(upcomingItems, upcomingMenuTableBody);
+                    
+                    // Iniciamos el contador si hay platos próximos
+                    if (countdownInterval) {
+                      clearInterval(countdownInterval);
+                    }
+                    if (upcomingItems.length > 0) {
+                      updateUpcomingTimers();
+                      countdownInterval = setInterval(updateUpcomingTimers, 1000);
+                    } else {
+                      clearInterval(countdownInterval);
+                    }
 
-                    // Mostramos u ocultamos las tablas según el contenido
                     if (readyItems.length > 0) {
                       menuTable.classList.remove("hidden");
                     } else {
