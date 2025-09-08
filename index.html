@@ -93,17 +93,11 @@
         }
 
         function loadMenu() {
-            const cachedMenu = localStorage.getItem("menuCache");
-            if (cachedMenu) {
-                const data = JSON.parse(cachedMenu);
-                renderMenu(data.items);
-            }
-
+            // Se eliminó la caché local para siempre mostrar los datos en vivo.
             db.ref("menuHoy").on("value", (snapshot) => {
                 if (snapshot.exists()) {
                     const data = snapshot.val();
                     renderMenu(data.items);
-                    localStorage.setItem("menuCache", JSON.stringify(data));
                 } else {
                     renderMenu([]);
                 }
