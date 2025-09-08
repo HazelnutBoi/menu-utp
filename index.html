@@ -45,25 +45,37 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
     <script>
-        // Leer las variables de entorno para la configuración
-        const firebaseConfig = {
-          apiKey: "%FIREBASE_API_KEY%",
-          authDomain: "%FIREBASE_AUTH_DOMAIN%",
-          databaseURL: "%FIREBASE_DATABASE_URL%",
-          projectId: "%FIREBASE_PROJECT_ID%",
-          storageBucket: "%FIREBASE_STORAGE_BUCKET%",
-          messagingSenderId: "%FIREBASE_MESSAGING_SENDER_ID%",
-          appId: "%FIREBASE_APP_ID%",
-          measurementId: "%FIREBASE_MEASUREMENT_ID%"
-        };
-        
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-
         const menuTableBody = document.querySelector("#menuTable tbody");
         const loadingMessage = document.getElementById("loading");
         const menuTable = document.getElementById("menuTable");
+        let db; // Variable para la base de datos
 
+        // Función para inicializar Firebase de forma segura
+        async function initializeFirebase() {
+            try {
+                // Solicitar la configuración de Firebase a la función del servidor
+                const response = await fetch('/api/firebase-config');
+                const firebaseConfig = await response.json();
+                
+                // Inicializar Firebase
+                firebase.initializeApp(firebaseConfig);
+                db = firebase.database();
+                
+                // Cargar el menú después de la inicialización
+                loadMenu();
+                
+                // Registrar la visita
+                try {
+                    fetch("/api/track-view", { method: "POST" });
+                } catch (error) {
+                    console.error("Error al registrar la visita");
+                }
+            } catch (error) {
+                console.error("Error al obtener la configuración de Firebase:", error);
+                loadingMessage.textContent = "Error al cargar el menú.";
+            }
+        }
+        
         function renderMenu(items) {
           menuTableBody.innerHTML = "";
           if (items && items.length > 0) {
@@ -85,27 +97,25 @@
           }
         }
 
-        const cachedMenu = localStorage.getItem("menuCache");
-        if (cachedMenu) {
-            const data = JSON.parse(cachedMenu);
-            renderMenu(data.items);
-        }
-
-        db.ref("menuHoy").on("value", (snapshot) => {
-            if (snapshot.exists()) {
-                const data = snapshot.val();
+        function loadMenu() {
+            const cachedMenu = localStorage.getItem("menuCache");
+            if (cachedMenu) {
+                const data = JSON.parse(cachedMenu);
                 renderMenu(data.items);
-                localStorage.setItem("menuCache", JSON.stringify(data));
-            } else {
-                renderMenu([]);
             }
-        });
 
-        try {
-            fetch("/api/track-view", { method: "POST" });
-        } catch (error) {
-            console.error("Error al registrar la visita");
+            db.ref("menuHoy").on("value", (snapshot) => {
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    renderMenu(data.items);
+                    localStorage.setItem("menuCache", JSON.stringify(data));
+                } else {
+                    renderMenu([]);
+                }
+            });
         }
+        
+        initializeFirebase();
     </script>
 </body>
 </html>
