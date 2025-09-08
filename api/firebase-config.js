@@ -1,14 +1,5 @@
 // api/firebase-config.js
-    
 module.exports = (req, res) => {
-  // Obtener la clave secreta de la URL
-  const secret = req.query.secret;
-
-  // Comparar con la clave secreta de Vercel
-  if (secret !== process.env.FIREBASE_CONFIG_SECRET) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-
   const config = {
     apiKey: process.env.FIREBASE_API_KEY,
     authDomain: process.env.FIREBASE_AUTH_DOMAIN,
