@@ -1,308 +1,83 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Menú del Día - UTP CRPO</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --utp-purple: #6a0dad;
-      --utp-light-purple: #8e44ad;
-      --text-dark: #333;
-      --text-light: #555;
-      --bg-light: #f9f9f9;
-      --bg-medium: #f0f2f5;
-      --shadow-subtle: 0 4px 15px rgba(0,0,0,0.1);
-    }
-
-    body {
-      font-family: 'Roboto', sans-serif;
-      background: var(--bg-medium);
-      margin: 0;
-      padding: 0;
-      text-align: center;
-      color: var(--text-dark);
-      line-height: 1.6;
-    }
-
-    header {
-      background: var(--utp-purple);
-      color: white;
-      padding: 15px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: var(--shadow-subtle);
-      border-bottom: 5px solid var(--utp-light-purple);
-    }
-    header img {
-      height: 60px;
-      margin-right: 20px;
-      animation: fadeIn 1s ease-out;
-    }
-    header .header-text {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 2.2rem;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-    }
-    header p {
-      margin: 5px 0 0;
-      font-size: 1.3rem;
-      font-weight: 300;
-      opacity: 0.9;
-    }
-
-    table {
-      width: 90%;
-      max-width: 1300px;
-      margin: 20px auto;
-      border-collapse: separate;
-      border-spacing: 0;
-      box-shadow: var(--shadow-subtle);
-      border-radius: 15px;
-      overflow: hidden;
-      background: white;
-      animation: slideInUp 0.8s ease-out forwards;
-      opacity: 0;
-    }
-    @keyframes slideInUp {
-      from { transform: translateY(20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    th, td {
-      padding: 10px 20px;
-      border-bottom: 1px solid #e0e0e0;
-      text-align: left;
-    }
-    th {
-      background: var(--utp-purple);
-      color: white;
-      font-size: 1.2rem;
-      text-transform: uppercase;
-      font-weight: 700;
-      letter-spacing: 1px;
-    }
-    table thead tr:first-child th:first-child { border-top-left-radius: 15px; }
-    table thead tr:first-child th:last-child { border-top-right-radius: 15px; }
-
-    td {
-      font-size: 1.1rem;
-      color: var(--text-light);
-    }
-    tr:nth-child(even) {
-      background: var(--bg-light);
-    }
-    tr:last-child td {
-      border-bottom: none;
-    }
-
-    .precio {
-      text-align: right;
-      font-weight: 700;
-      color: #28a745;
-      font-size: 1.3rem;
-    }
-    .no-menu {
-      margin-top: 80px;
-      font-size: 2.2rem;
-      color: #888;
-      text-align: center;
-      padding: 30px;
-      background: white;
-      border-radius: 15px;
-      box-shadow: var(--shadow-subtle);
-      width: fit-content;
-      margin-left: auto;
-      margin-right: auto;
-      animation: fadeIn 1.2s ease-out;
-    }
-
-    /* Responsive para móviles y tablets (hasta 992px de ancho) */
-    @media (max-width: 992px) {
+    <meta charset="UTF-8">
+    <title>Menú UTP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --utp-purple: #6a0dad;
+      }
       header {
-        flex-direction: column;
-        padding: 10px 0;
+        background: var(--utp-purple);
       }
-      header img {
-        height: 50px;
-        margin-bottom: 8px;
-        margin-right: 0;
-      }
-      header h1 {
-        font-size: 1.8rem;
-      }
-      header p {
-        font-size: 1rem;
-      }
-      header .header-text { 
-        align-items: center;
-      }
-      
-      thead { display: none; }
-      
-      table {
-        box-shadow: none;
-        border-radius: 0;
-        margin-top: 15px;
-        width: 95%;
-      }
-      
-      tr {
-        margin-bottom: 10px;
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        padding: 10px;
-        display: block;
-      }
-      
-      td {
-        border: none;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 8px 10px;
-        font-size: 1rem;
-      }
-      
-      td:before {
-        font-weight: 700;
-        content: attr(data-label);
-        color: var(--utp-purple);
-        font-size: 1.05rem;
-        margin-right: 10px;
-        flex-shrink: 0;
-      }
-      
-      /* Solución al problema de la etiqueta "Descripción" duplicada */
-      td[data-label="Descripción"]:before {
-        content: none;
-      }
-      
-      .precio {
-        font-size: 1.1rem;
-        white-space: nowrap;
-      }
-
-      .no-menu {
-        margin-top: 50px;
-        font-size: 1.5rem;
-        padding: 20px;
-        width: 80%;
-      }
-    }
-
-    /* Media query específica para pantallas muy pequeñas */
-    @media (max-width: 576px) {
-      header h1 {
-        font-size: 1.5rem;
-      }
-      header p {
-        font-size: 0.9rem;
-      }
-      td {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 5px 10px;
-      }
-      td:before {
-        margin-bottom: 3px;
-      }
-      .precio {
-        text-align: left;
-        width: 100%;
-      }
-    }
-  </style>
+    </style>
 </head>
-<body>
-  <header>
-    <img src="logo_utp.png" alt="Logo Universidad Tecnológica de Panamá">
-    <div class="header-text">
-      <h1 id="titulo">🍽 Menú del Día</h1>
-      <p id="fecha-actual"></p>
+<body class="font-roboto p-5 bg-gray-100 text-gray-800">
+    <header class="text-white p-4 text-center flex items-center justify-center shadow-md mb-8">
+      <img src="logo_utp.png" alt="Logo UTP" class="h-12 mr-4">
+      <h2 class="text-2xl font-bold">Menú UTP</h2>
+    </header>
+
+    <div id="loading" class="text-center text-xl text-gray-500">
+      Cargando menú...
     </div>
-  </header>
-
-  <div id="menu-container">
-    <div class="no-menu">Cargando menú...</div>
-  </div>
-
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyAMkuy8jW-uxMx9Xpq-MPmHkKsf8l7qKb8",
-      authDomain: "menu-cafeteria-crpo.firebaseapp.com",
-      databaseURL: "https://menu-cafeteria-crpo-default-rtdb.firebaseio.com",
-      projectId: "menu-cafeteria-crpo",
-      storageBucket: "menu-cafeteria-crpo.firebasestorage.app",
-      messagingSenderId: "741029761582",
-      appId: "1:741029761582:web:0256a9ea14385db5cd85bf",
-      measurementId: "G-ZWWZVLBRTT"
-    };
-
-    const app = firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-
-    const dias = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
-    const meses = ["enero", "febrero", "marzo", "abril", "mayo", "junio",
-                   "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
-    const hoy = new Date();
-    const diaSemana = dias[hoy.getDay()];
-    const diaMes = hoy.getDate();
-    const mes = meses[hoy.getMonth()];
-    const anio = hoy.getFullYear();
-    const fechaISO = `${anio}-${String(hoy.getMonth()+1).padStart(2,'0')}-${String(hoy.getDate()).padStart(2,'0')}`;
-
-    document.getElementById("fecha-actual").innerText = `${diaSemana} ${diaMes} de ${mes} de ${anio}`;
-
-    db.ref("menuHoy").on("value", snapshot => {
-      const container = document.getElementById("menu-container");
-      container.innerHTML = "";
-
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        
-        if (data.fecha !== fechaISO || !data.items || data.items.length === 0) {
-          container.innerHTML = `<div class="no-menu">🚫 El menú para hoy no está disponible.</div>`;
-          return;
-        }
-
-        let tabla = `<table>
-          <thead>
-            <tr><th>Descripción</th><th>Precio</th></tr>
-          </thead>
-          <tbody>`;
-
-        data.items.forEach(item => {
-          tabla += `
+    
+    <table id="menuTable" class="hidden w-full border-collapse my-5 mx-auto shadow-lg bg-white rounded-lg overflow-hidden">
+        <thead>
             <tr>
-              <td data-label="Descripción">${item.descripcion}</td>
-              <td data-label="Precio" class="precio">$${parseFloat(item.precio).toFixed(2)}</td>
-            </tr>`;
-        });
+                <th class="p-4 border border-gray-200 text-left text-white uppercase font-bold text-lg" style="background-color: var(--utp-purple);">Descripción</th>
+                <th class="p-4 border border-gray-200 text-left text-white uppercase font-bold text-lg" style="background-color: var(--utp-purple);">Precio</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
 
-        tabla += `</tbody></table>`;
-        container.innerHTML = tabla;
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+          apiKey: "AIzaSyAMkuy8jW-uxMx9Xpq-MPmHkKsf8l7qKb8",
+          authDomain: "menu-cafeteria-crpo.firebaseapp.com",
+          databaseURL: "https://menu-cafeteria-crpo-default-rtdb.firebaseio.com",
+          projectId: "menu-cafeteria-crpo",
+          storageBucket: "menu-cafeteria-crpo.firebasestorage.app",
+          messagingSenderId: "741029761582",
+          appId: "1:741029761582:web:0256a9ea14385db5cd85bf",
+          measurementId: "G-ZWWZVLBRTT"
+        };
         
-      } else {
-        container.innerHTML = `<div class="no-menu">🚫 El menú para hoy no está disponible.</div>`;
-      }
-    });
-  </script>
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        const menuTableBody = document.querySelector("#menuTable tbody");
+        const loadingMessage = document.getElementById("loading");
+        const menuTable = document.getElementById("menuTable");
+
+        db.ref("menuHoy").on("value", (snapshot) => {
+            menuTableBody.innerHTML = "";
+            
+            if (snapshot.exists() && snapshot.val().items) {
+                snapshot.val().items.forEach(item => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td class="p-4 border border-gray-200 text-lg">${item.descripcion}</td>
+                        <td class="p-4 border border-gray-200 text-lg">${item.precio}</td>
+                    `;
+                    menuTableBody.appendChild(row);
+                });
+                loadingMessage.classList.add("hidden");
+                menuTable.classList.remove("hidden");
+            } else {
+                loadingMessage.textContent = "El menú de hoy no está disponible.";
+                loadingMessage.classList.remove("hidden");
+                menuTable.classList.add("hidden");
+            }
+        });
+    </script>
 </body>
 </html>
