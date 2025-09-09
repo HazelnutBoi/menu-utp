@@ -19,14 +19,15 @@
     </style>
 </head>
 <body class="font-roboto bg-gray-100 text-gray-800" onunload="detachListener()">
-    <header class="header-bg text-white py-4 text-center flex items-center justify-center shadow-md mb-8">
-      <img src="logo_utp.png" alt="Logo UTP" class="h-12 mr-4">
-      <h2 class="text-2xl font-bold">Menú UTP</h2>
+    <header class="header-bg text-white py-4 text-center flex flex-col items-center justify-center shadow-md mb-8">
+      <div class="flex items-center justify-center">
+        <img src="logo_utp.png" alt="Logo UTP" class="h-12 mr-4">
+        <h2 class="text-2xl font-bold">Menú UTP</h2>
+      </div>
+      <h3 id="fechaHoy" class="text-white text-md mt-2"></h3>
     </header>
 
     <div class="px-5 max-w-4xl mx-auto">
-      <h3 id="fechaHoy" class="text-xl text-center text-gray-500 mb-4"></h3>
-
       <div id="loading" class="text-center text-xl text-gray-500">
         Cargando menú...
       </div>
@@ -79,7 +80,7 @@
         function displayCurrentDate() {
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             const today = new Date().toLocaleDateString('es-ES', options);
-            fechaHoyElement.textContent = `Hoy es ${today}`;
+            fechaHoyElement.textContent = `Hoy, ${today}`;
         }
         
         async function initializeFirebase() {
