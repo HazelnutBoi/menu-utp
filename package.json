@@ -4,7 +4,7 @@
   "description": "Menú público para el proyecto UTP.",
   "private": true,
   "engines": {
-    "node": "18.x"
+    "node": "22.x"
   },
   "dependencies": {
     "firebase-admin": "^11.10.1"
