@@ -1,0 +1,12 @@
+{
+  "name": "menu-utp",
+  "version": "1.0.0",
+  "description": "Menú público para el proyecto UTP.",
+  "private": true,
+  "engines": {
+    "node": "18.x"
+  },
+  "dependencies": {
+    "firebase-admin": "^11.10.1"
+  }
+}
