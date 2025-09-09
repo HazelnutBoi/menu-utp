@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Menú UTP CRPO</title>
+    <title>Menú UTP</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
@@ -22,7 +22,7 @@
     <header class="header-bg text-white py-4 text-center flex flex-col items-center justify-center shadow-md mb-8">
       <div class="flex items-center justify-center">
         <img src="logo_utp.png" alt="Logo UTP" class="h-12 mr-4">
-        <h2 class="text-2xl font-bold">Menú UTP CRPO</h2>
+        <h2 class="text-2xl font-bold">Menú UTP</h2>
       </div>
       <h3 id="fechaHoy" class="text-white text-md mt-2"></h3>
     </header>
@@ -196,6 +196,11 @@
                     renderMenu([], upcomingMenuTableBody);
                     loadingMessage.textContent = "El menú de hoy no está disponible.";
                     loadingMessage.classList.remove("hidden");
+
+                    // Ocultar las tablas y los títulos si el menú está completamente vacío
+                    menuTable.classList.add("hidden");
+                    upcomingMenuTable.classList.add("hidden");
+                    upcomingHeader.classList.add("hidden");
                 }
             });
         }
@@ -210,5 +215,3 @@
     </script>
 </body>
 </html>
-
-
