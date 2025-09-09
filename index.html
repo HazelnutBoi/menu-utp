@@ -31,7 +31,6 @@
         Cargando menú...
       </div>
       
-      <h3 class="text-2xl font-bold text-gray-800 mb-2">Menú de Hoy</h3>
       <table id="menuTable" class="hidden w-full border-collapse my-5 shadow-lg bg-white rounded-lg overflow-hidden">
           <thead>
               <tr>
@@ -91,7 +90,7 @@
                 firebase.initializeApp(firebaseConfig);
                 db = firebase.firestore();
                 
-                displayCurrentDate(); // Llamamos a la función para mostrar la fecha
+                displayCurrentDate();
                 loadMenu();
                 
                 try {
