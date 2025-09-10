@@ -17,7 +17,6 @@ module.exports = async (req, res) => {
         return res.status(405).send({ success: false, message: "Método no permitido." });
     }
 
-    // Asegúrate de que la clave secreta esté presente en el query
     if (req.query.secret !== process.env.CRON_SECRET) {
         return res.status(403).send({ success: false, message: "Acceso denegado. Clave secreta incorrecta." });
     }
@@ -44,3 +43,4 @@ module.exports = async (req, res) => {
         return res.status(500).send({ success: false, message: "Error al registrar la visita." });
     }
 };
+
