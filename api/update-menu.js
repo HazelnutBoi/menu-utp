@@ -12,7 +12,6 @@ const db = admin.firestore();
 module.exports = async (req, res) => {
     res.setHeader('Content-Type', 'application/json');
 
-    // Asegúrate de que la clave secreta esté presente en el query
     if (req.query.secret !== process.env.CRON_SECRET) {
         return res.status(403).send({ success: false, message: "Acceso denegado. Clave secreta incorrecta." });
     }
@@ -30,7 +29,6 @@ module.exports = async (req, res) => {
         
         const updatedItems = items.map(item => {
             if (item.esProximo && item.readyAt <= Date.now()) {
-                // El tiempo ha expirado, movemos el plato al menú principal
                 updated = true;
                 delete item.esProximo;
                 delete item.readyAt;
