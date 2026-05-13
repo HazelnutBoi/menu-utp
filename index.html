@@ -27,16 +27,17 @@
       <h3 id="fechaHoy" class="text-white text-md mt-2"></h3>
     </header>
 
-    <div class="px-5 max-w-4xl mx-auto">
+    <div class="px-2 md:px-5 max-w-5xl mx-auto overflow-x-auto">
       <div id="loading" class="text-center text-xl text-gray-500">
         Cargando menú...
       </div>
       
-      <table id="menuTable" class="hidden w-full border-collapse my-5 shadow-lg bg-white rounded-lg overflow-hidden">
+      <table id="menuTable" class="hidden w-full border-collapse my-5 shadow-lg bg-white rounded-lg overflow-hidden min-w-[600px]">
           <thead>
               <tr>
-                  <th class="p-4 border border-gray-200 text-left text-white uppercase font-bold text-lg" style="background-color: var(--utp-purple);">Descripción</th>
-                  <th class="p-4 border border-gray-200 text-left text-white uppercase font-bold text-lg" style="background-color: var(--utp-purple);">Precio</th>
+                  <th class="p-4 border border-gray-200 text-left text-white uppercase font-bold text-sm md:text-lg" style="background-color: var(--utp-purple);">Descripción</th>
+                  <th class="p-4 border border-gray-200 text-left text-white uppercase font-bold text-sm md:text-lg" style="background-color: var(--utp-purple);">P. Estudiantil</th>
+                  <th class="p-4 border border-gray-200 text-left text-white uppercase font-bold text-sm md:text-lg" style="background-color: var(--utp-purple);">P. Administrativo</th>
               </tr>
           </thead>
           <tbody>
@@ -44,11 +45,14 @@
       </table>
       
       <h3 id="upcomingHeader" class="text-2xl font-bold text-gray-800 mt-8 mb-2 hidden">Próximamente</h3>
-      <table id="upcomingMenuTable" class="hidden w-full border-collapse my-5 shadow-lg bg-white rounded-lg overflow-hidden">
+      
+      <table id="upcomingMenuTable" class="hidden w-full border-collapse my-5 shadow-lg bg-white rounded-lg overflow-hidden min-w-[600px]">
           <thead>
               <tr>
-                  <th class="p-4 border border-gray-200 text-left text-white uppercase font-bold text-lg" style="background-color: var(--utp-purple);">Descripción</th>
-                  <th class="p-4 border border-gray-200 text-left text-white uppercase font-bold text-lg" style="background-color: var(--utp-purple);">Tiempo restante / Precio</th>
+                  <th class="p-4 border border-gray-200 text-left text-white uppercase font-bold text-sm md:text-lg" style="background-color: var(--utp-purple);">Descripción</th>
+                  <th class="p-4 border border-gray-200 text-left text-white uppercase font-bold text-sm md:text-lg" style="background-color: var(--utp-purple);">P. Estudiantil</th>
+                  <th class="p-4 border border-gray-200 text-left text-white uppercase font-bold text-sm md:text-lg" style="background-color: var(--utp-purple);">P. Administrativo</th>
+                  <th class="p-4 border border-gray-200 text-left text-white uppercase font-bold text-sm md:text-lg" style="background-color: var(--utp-purple);">Tiempo Restante</th>
               </tr>
           </thead>
           <tbody>
@@ -123,14 +127,12 @@
             rows.forEach(row => {
                 const endTime = parseInt(row.dataset.endtime);
                 const remaining = endTime - Date.now();
-                const timeCell = row.querySelector("td:nth-child(2)");
+                const timeCell = row.querySelector(".time-cell");
 
                 if (remaining > 0) {
-                    const price = row.dataset.price;
-                    timeCell.innerHTML = `<div>${formatRemainingTime(remaining)}</div><div class="font-bold">B/. ${price}</div>`;
+                    timeCell.innerHTML = `<div class="font-bold text-orange-600">${formatRemainingTime(remaining)}</div>`;
                 } else {
-                    const price = row.dataset.price;
-                    timeCell.innerHTML = `<div>¡Listo!</div><div class="font-bold">B/. ${price}</div>`;
+                    timeCell.innerHTML = `<div class="font-bold text-green-600">¡Listo!</div>`;
                 }
             });
         }
@@ -140,18 +142,24 @@
           if (items && items.length > 0) {
             items.forEach(item => {
                 const row = document.createElement("tr");
+                
+                // Compatibilidad hacia atrás: si no existe precioEst, usa el precio viejo
+                const pEst = parseFloat(item.precioEst || item.precio || 0).toFixed(2);
+                const pAdm = parseFloat(item.precioAdm || 0).toFixed(2);
+
                 if (item.esProximo) {
                     row.dataset.endtime = item.readyAt;
-                    row.dataset.price = parseFloat(item.precio).toFixed(2);
                     row.innerHTML = `
-                        <td class="p-4 border border-gray-200 text-lg">${item.descripcion}</td>
-                        <td class="p-4 border border-gray-200 text-lg">Cargando...</td>
+                        <td class="p-4 border border-gray-200 text-base md:text-lg">${item.descripcion}</td>
+                        <td class="p-4 border border-gray-200 text-base md:text-lg font-bold text-green-700">B/. ${pEst}</td>
+                        <td class="p-4 border border-gray-200 text-base md:text-lg font-bold text-blue-700">B/. ${pAdm}</td>
+                        <td class="p-4 border border-gray-200 text-base md:text-lg time-cell text-center">Cargando...</td>
                     `;
                 } else {
-                    const formattedPrice = "B/. " + parseFloat(item.precio).toFixed(2);
                     row.innerHTML = `
-                        <td class="p-4 border border-gray-200 text-lg">${item.descripcion}</td>
-                        <td class="p-4 border border-gray-200 text-lg">${formattedPrice}</td>
+                        <td class="p-4 border border-gray-200 text-base md:text-lg">${item.descripcion}</td>
+                        <td class="p-4 border border-gray-200 text-base md:text-lg font-bold text-green-700">B/. ${pEst}</td>
+                        <td class="p-4 border border-gray-200 text-base md:text-lg font-bold text-blue-700">B/. ${pAdm}</td>
                     `;
                 }
                 tableBody.appendChild(row);
